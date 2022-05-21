@@ -1,0 +1,64 @@
+   
+    - name: Install aptitude
+      apt:
+        name: aptitude
+        state: latest
+        update_cache: true
+
+    - name: Install required system packages
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+        state: latest
+        update_cache: true
+
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Update apt and install docker-ce
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true
+
+    - name: Install Docker Module for Python
+      pip:
+        name: docker
+    
+    - name: Creates directory
+      file:
+        path: ./datajenkins
+        state: directory
+
+    - name: Pull default Docker image
+      docker_image:
+        name: jenkins/jenkins:lts
+        source: pull
+
+    - name: command install jenkins
+      command: bash -c "sudo docker run -v /var/run/docker.sock:/var/run/docker.sock -v $(which docker):$(which docker) -v `pwd`/datajenkins:/var/jenkins_home  -p 8080:8080  --user 0:0 --name jenkins-server -d jenkins/jenkins:lts"
+
+    - name: sleep wait
+      command: /bin/sleep 40
+
+    - name: cat pass jenkins
+      command: bash -c "sudo docker exec jenkins-server cat /var/jenkins_home/secrets/initialAdminPassword"
+      register: pass_jen
+
+ 
+    - debug:
+        var: pass_jen.stdout_lines
+

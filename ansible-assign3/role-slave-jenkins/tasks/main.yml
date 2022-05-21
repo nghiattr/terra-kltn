@@ -1,0 +1,106 @@
+
+    - name: Install aptitude
+      apt:
+        name: aptitude
+        state: latest
+        update_cache: true
+
+    - name: Install required system packages
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+          - azure-cli
+        state: latest
+        update_cache: true
+
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Update apt and install docker-ce
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true
+
+    - name: Install Docker Module for Python
+      pip:
+        name: docker
+    
+    - name: permission for docker
+      become: yes
+      shell: |
+        chmod 777 /var/run/docker.sock
+
+#Install Java
+
+    - name: Update APT package manager repositories cache
+      become: true
+      apt:
+        update_cache: yes
+    - name: Install Java using Ansible
+      become: yes
+      apt:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+           - openjdk-11-jdk
+    
+#Helmmmm
+    - name: install helm
+      become: yes
+      shell: |
+        curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+        warn=false
+
+    - name: sleep wait
+      command: /bin/sleep 10
+
+    - name: install helm
+      become: yes
+      shell: |
+        helm init
+        chmod 777 /usr/local/bin/helm
+
+        
+# #Install postgres client
+#     - name: install postgres client
+#       become: yes
+#       shell: |
+#         sudo apt install -y postgresql-client
+
+#kubectl 
+
+    - name: Add an apt signing key for Kubernetes
+      become: yes
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+
+    - name: Adding apt repository for Kubernetes
+      become: yes
+      apt_repository:
+        repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+        filename: kubernetes.list
+
+    - name: Install Kubernetes binaries
+      become: yes
+      apt: 
+        name: kubectl
+        state: present
+        update_cache: yes
+    

@@ -378,3 +378,21 @@ resource "null_resource" "install_and_run_nexus" {
   }
 
 }
+
+
+# resource "null_resource" "install_prometheus_grafana" {
+#   depends_on = [azurerm_kubernetes_cluster.k8.k8s-cluster]
+#   connection {
+#     type = "ssh"
+#     user = data.vault_generic_secret.secret-vm.data.admin_username
+#     private_key = data.vault_generic_secret.secret-vm.data.id_rsa
+#     host        = azurerm_linux_virtual_machine.centos-vm.public_ip_address
+#   }
+
+#   provisioner "remote-exec" {
+#     inline = []
+#   }
+
+
+
+# }

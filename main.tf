@@ -292,7 +292,7 @@ resource "azurerm_kubernetes_cluster" "k8s-cluster" {
 #Ansible
 
 resource "null_resource" "install_and_run_ansible2" {
-  depends_on = [azurerm_linux_virtual_machine.centos-vm]
+  depends_on = [azurerm_linux_virtual_machine.ansible-vm]
   connection {
     type = "ssh"
     #user = var.admin_username
@@ -300,18 +300,21 @@ resource "null_resource" "install_and_run_ansible2" {
     user = data.vault_generic_secret.secret-vm.data.admin_username
     #password = data.vault_generic_secret.secret-vm.data.admin_password
     private_key = data.vault_generic_secret.secret-vm.data.id_rsa
-    host        = azurerm_linux_virtual_machine.centos-vm.public_ip_address
+    host        = azurerm_linux_virtual_machine.ansible-vm.public_ip_address
   }
 
   provisioner "remote-exec" {
     inline = [
       "sudo mkdir /home/ac",
-      "sudo chmod 777 /home/ac"
+      "sudo chmod 777 /home/ac",
+      "touch ~/.ssh/id_rsa",
+      "sudo chmod 600 ~/.ssh/id_rsa",
+      "echo '${data.vault_generic_secret.secret-vm.data.id_rsa}' >> ~/.ssh/id_rsa", 
     ]
   }
   provisioner "file" {
-    source      = "./install-awx.sh"
-    destination = "/home/ac/install-awx.sh"
+    source      = "./install-ansible.sh"
+    destination = "/home/ac/install-ansible.sh"
   }
   provisioner "file" {
     source      = "./ansible-assign3/"
@@ -322,15 +325,18 @@ resource "null_resource" "install_and_run_ansible2" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo chmod +x /home/ac/install-awx.sh",
-      "sudo /home/ac/install-awx.sh",
+      "sudo chmod +x /home/ac/install-ansible.sh",
+      "sudo /home/ac/install-ansible.sh",
       "sudo chmod 777 /etc/ansible/ansible.cfg",
-      "echo $'[defaults] \nhost_key_checking = false' > /etc/ansible/ansible.cfg",
-      "echo 'server1 ansible_host=${azurerm_linux_virtual_machine.jenkins-sv.public_ip_address} ansible_user=labadmin ansible_password=Password1234! ansible_python_interpreter=/usr/bin/python3' > /home/ac/inventory ",
-      "echo 'server2 ansible_host=${azurerm_linux_virtual_machine.gitlab-sv.public_ip_address} ansible_user=labadmin ansible_password=Password1234! ansible_python_interpreter=/usr/bin/python3' > /home/ac/inventory2 ",
-      "echo 'server3 ansible_host=${azurerm_linux_virtual_machine.nexus-vm.public_ip_address} ansible_user=labadmin ansible_password=Password1234! ansible_python_interpreter=/usr/bin/python3' > /home/ac/inventory3 ",
-      "echo 'server4 ansible_host=${azurerm_linux_virtual_machine.sonar-sv.public_ip_address} ansible_user=labadmin ansible_password=Password1234! ansible_python_interpreter=/usr/bin/python3' > /home/ac/inventory4 ",
-      "echo 'server5 ansible_host=${azurerm_linux_virtual_machine.jenkins-slave.public_ip_address} ansible_user=labadmin ansible_password=Password1234! ansible_python_interpreter=/usr/bin/python3' > /home/ac/inventory5 ",
+      "echo '[defaults] \nhost_key_checking = false' > /etc/ansible/ansible.cfg",
+      
+      # "sudo chmod 600 ~/.ssh/id_rsa",
+      "echo 'server1 ansible_host=${azurerm_linux_virtual_machine.jenkins-sv.public_ip_address} ansible_python_interpreter=/usr/bin/python3' > /home/ac/inventory ",
+      "echo 'server2 ansible_host=${azurerm_linux_virtual_machine.gitlab-sv.public_ip_address} ansible_python_interpreter=/usr/bin/python3' > /home/ac/inventory2 ",
+      "echo 'server3 ansible_host=${azurerm_linux_virtual_machine.nexus-vm.public_ip_address} ansible_python_interpreter=/usr/bin/python3' > /home/ac/inventory3 ",
+      "echo 'server4 ansible_host=${azurerm_linux_virtual_machine.sonar-sv.public_ip_address}  ansible_python_interpreter=/usr/bin/python3' > /home/ac/inventory4 ",
+      "echo 'server5 ansible_host=${azurerm_linux_virtual_machine.jenkins-slave.public_ip_address}  ansible_python_interpreter=/usr/bin/python3' > /home/ac/inventory5 ",
+      #"echo 'server5 ansible_host=${azurerm_linux_virtual_machine.jenkins-slave.public_ip_address} ansible_user=labadmin ansible_password=Password1234! ansible_python_interpreter=/usr/bin/python3' > /home/ac/inventory5 ",
 
 
       "ansible-playbook /home/ac/playbook.yaml -i /home/ac/inventory -u labadmin ",
@@ -386,7 +392,7 @@ resource "null_resource" "install_and_run_nexus" {
 #     type = "ssh"
 #     user = data.vault_generic_secret.secret-vm.data.admin_username
 #     private_key = data.vault_generic_secret.secret-vm.data.id_rsa
-#     host        = azurerm_linux_virtual_machine.centos-vm.public_ip_address
+#     host        = azurerm_linux_virtual_machine.ansible-vm.public_ip_address
 #   }
 
 #   provisioner "remote-exec" {

@@ -45,6 +45,6 @@
         name: sonarqube:community
         source: pull
 
-    - name: command install jenkins
+    - name: command install sonar-qube
       become: yes
       command: bash -c "docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:community"

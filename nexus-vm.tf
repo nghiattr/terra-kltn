@@ -43,7 +43,7 @@ resource "azurerm_ssh_public_key" "ssh-nexus" {
   name                = "sshkey-nexus"
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.resource_group_location5
-  public_key          = file("./id_rsa.pub")
+  public_key          = data.vault_generic_secret.secret-vm.data.id_rsapub
 }
 
 #Create virtual machine nexus nexus

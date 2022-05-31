@@ -4,7 +4,7 @@ provider "azurerm" {
 
 
 provider "vault" {
-  address = "http://20.205.97.64:8200/"
+  address = "http://20.187.75.182:8200/"
   token   = var.tokenvar
 }
 

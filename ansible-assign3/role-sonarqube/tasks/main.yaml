@@ -46,5 +46,5 @@
         source: pull
 
     - name: command install sonar-qube
-      become: yes
+      become: true
       command: bash -c "docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:community"

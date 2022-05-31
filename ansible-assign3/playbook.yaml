@@ -24,7 +24,7 @@
 
 - name: Install Jenkins Slave
   hosts: server5
-  become: yes
+  become: true
   roles:
     - role-slave-jenkins
 

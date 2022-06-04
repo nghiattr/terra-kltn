@@ -54,7 +54,8 @@
         sudo chmod 777 /var/run/docker.sock
 
     - name: command install jenkins
-      command: bash -c "docker run -v /var/run/docker.sock:/var/run/docker.sock -v $(which docker):$(which docker) -v `pwd`/datajenkins:/var/jenkins_home  -p 8080:8080 --name jenkins-server -d jenkins/jenkins:lts"
+      become: yes
+      command: bash -c "docker run -v /var/run/docker.sock:/var/run/docker.sock -v $(which docker):$(which docker) -v `pwd`/datajenkins:/var/jenkins_home  -p 8080:8080 --name jenkins-server -u 0:0 -d jenkins/jenkins:lts"
 
     - name: sleep wait
       command: /bin/sleep 40

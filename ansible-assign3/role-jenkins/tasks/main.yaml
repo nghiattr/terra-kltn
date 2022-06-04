@@ -47,15 +47,20 @@
       docker_image:
         name: jenkins/jenkins:lts
         source: pull
+    
+    - name: chmod /var/run/docker.sock
+      become: yes
+      shell: |
+        sudo chmod 777 /var/run/docker.sock
 
     - name: command install jenkins
-      command: bash -c "sudo docker run -v /var/run/docker.sock:/var/run/docker.sock -v $(which docker):$(which docker) -v `pwd`/datajenkins:/var/jenkins_home  -p 8080:8080  --user 0:0 --name jenkins-server -d jenkins/jenkins:lts"
+      command: bash -c "docker run -v /var/run/docker.sock:/var/run/docker.sock -v $(which docker):$(which docker) -v `pwd`/datajenkins:/var/jenkins_home  -p 8080:8080 --name jenkins-server -d jenkins/jenkins:lts"
 
     - name: sleep wait
       command: /bin/sleep 40
 
     - name: cat pass jenkins
-      command: bash -c "sudo docker exec jenkins-server cat /var/jenkins_home/secrets/initialAdminPassword"
+      command: bash -c "docker exec jenkins-server cat /var/jenkins_home/secrets/initialAdminPassword"
       register: pass_jen
 
  

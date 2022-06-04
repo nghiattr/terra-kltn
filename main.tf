@@ -309,7 +309,7 @@ resource "null_resource" "install_and_run_ansible2" {
       "sudo chmod 777 /home/ac",
       "touch ~/.ssh/id_rsa",
       "sudo chmod 600 ~/.ssh/id_rsa",
-      "echo '${data.vault_generic_secret.secret-vm.data.id_rsa}' >> ~/.ssh/id_rsa", 
+      "echo '${data.vault_generic_secret.secret-vm.data.id_rsa}' >> ~/.ssh/id_rsa",
     ]
   }
   provisioner "file" {
@@ -329,7 +329,7 @@ resource "null_resource" "install_and_run_ansible2" {
       "sudo /home/ac/install-ansible.sh",
       "sudo chmod 777 /etc/ansible/ansible.cfg",
       "echo '[defaults] \nhost_key_checking = false' > /etc/ansible/ansible.cfg",
-      
+
       # "sudo chmod 600 ~/.ssh/id_rsa",
       "echo 'server1 ansible_host=${azurerm_linux_virtual_machine.jenkins-sv.public_ip_address} ansible_python_interpreter=/usr/bin/python3' > /home/ac/inventory ",
       "echo 'server2 ansible_host=${azurerm_linux_virtual_machine.gitlab-sv.public_ip_address} ansible_python_interpreter=/usr/bin/python3' > /home/ac/inventory2 ",

@@ -42,15 +42,20 @@
       docker_image:
         name: gitlab/gitlab-ce:latest
         source: pull
+    
+    - name: chmod /var/run/docker.sock
+      become: yes
+      shell: |
+        sudo chmod 777 /var/run/docker.sock
 
     - name: command install gitlab
-      command: bash -c "sudo docker run --detach --publish 8011:443 --publish 8012:80 --publish 8013:22 --name gitlab-sv --volume `pwd`/config-gl/config:/etc/gitlab --volume `pwd`/logs-gl/logs:/var/log/gitlab --volume `pwd`/data-gl/data:/var/opt/gitlab gitlab/gitlab-ce:latest"
+      command: bash -c "docker run --detach --publish 8011:443 --publish 8012:80 --publish 8013:22 --name gitlab-sv --volume `pwd`/config-gl/config:/etc/gitlab --volume `pwd`/logs-gl/logs:/var/log/gitlab --volume `pwd`/data-gl/data:/var/opt/gitlab gitlab/gitlab-ce:latest"
     
     - name: sleep wait
       command: /bin/sleep 40
 
     - name: cat pass gitlab
-      command: bash -c "sudo docker exec -it gitlab-sv grep 'Password:' /etc/gitlab/initial_root_password"
+      command: bash -c "docker exec -it gitlab-sv grep 'Password:' /etc/gitlab/initial_root_password"
       register: pass_git
  
     - debug:

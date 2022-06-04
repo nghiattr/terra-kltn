@@ -7,19 +7,26 @@
     #     source: pull
 
     - name: Login AKS
-      become: true
+      become_user: labadmin
       shell: |
         az account set --subscription c2b77945-7f36-484f-a6fc-6af013ec33e6
         az aks get-credentials --resource-group rg-week6 --name azure-aks
 
 
     - name: install prometheus+grafana
-      become: yes
+      become_user: labadmin
       shell: |
         kubectl create namespace prometheus
         helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
         helm repo update
         helm install prometheus prometheus-community/prometheus-operator --namespace prometheus
+
+    - name: sleep wait
+      command: /bin/sleep 40
+
+    - name: install prometheus+grafana
+      become_user: labadmin
+      shell: | 
         kubectl patch svc prometheus-grafana -n prometheus -p '{"spec": {"type": "LoadBalancer"}}'
 
 
@@ -30,7 +37,7 @@
 
     - name: cat pass grafana
       become: yes
-      command: bash -c "kubectl get secret --namespace prometheus grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo"
+      command: bash -c "kubectl get secret --namespace prometheus prometheus-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo"
       register: pass_grafana
 
  

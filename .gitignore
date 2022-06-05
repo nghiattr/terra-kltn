@@ -3,5 +3,5 @@
 
 id_r*
 outputapply.txt
-output*
+output*.json
 terraform*

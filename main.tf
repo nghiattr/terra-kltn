@@ -339,11 +339,11 @@ resource "null_resource" "install_and_run_ansible2" {
       #"echo 'server5 ansible_host=${azurerm_linux_virtual_machine.jenkins-slave.public_ip_address} ansible_user=labadmin ansible_password=Password1234! ansible_python_interpreter=/usr/bin/python3' > /home/ac/inventory5 ",
 
 
-      "ansible-playbook /home/ac/playbook.yaml -i /home/ac/inventory -u labadmin ",
-      "ansible-playbook /home/ac/playbook.yaml -i /home/ac/inventory2 -u labadmin ",
-      "ansible-playbook /home/ac/playbook.yaml -i /home/ac/inventory3 -u labadmin ",
-      "ansible-playbook /home/ac/playbook.yaml -i /home/ac/inventory4 -u labadmin ",
-      "ansible-playbook /home/ac/playbook.yaml -i /home/ac/inventory5 -u labadmin ",
+      "ansible-playbook /home/ac/playbook.yaml -i /home/ac/inventory -u ${data.vault_generic_secret.secret-vm.data.admin_username} ",
+      "ansible-playbook /home/ac/playbook.yaml -i /home/ac/inventory2 -u ${data.vault_generic_secret.secret-vm.data.admin_username} ",
+      "ansible-playbook /home/ac/playbook.yaml -i /home/ac/inventory3 -u ${data.vault_generic_secret.secret-vm.data.admin_username} ",
+      "ansible-playbook /home/ac/playbook.yaml -i /home/ac/inventory4 -u ${data.vault_generic_secret.secret-vm.data.admin_username} ",
+      "ansible-playbook /home/ac/playbook.yaml -i /home/ac/inventory5 -u ${data.vault_generic_secret.secret-vm.data.admin_username} ",
 
     ]
   }

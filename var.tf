@@ -1,5 +1,5 @@
 variable "resource_group_name" {
-  default     = "rg-week6"
+  default     = "devops-sys"
   description = "Location of the resource group."
 }
 

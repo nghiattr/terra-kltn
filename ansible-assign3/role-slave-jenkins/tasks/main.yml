@@ -15,6 +15,7 @@
           - python3-pip
           - virtualenv
           - python3-setuptools
+          - python3.8-venv
           - azure-cli
         state: latest
         update_cache: true
@@ -104,3 +105,11 @@
         state: present
         update_cache: yes
     
+#SL cli
+    - name: install helm
+      become: yes
+      shell: |
+        curl https://cdn.shiftleft.io/download/sl > sl
+        cp -r sl /usr/local/bin/sl
+        chmod a+rx /usr/local/bin/sl
+        sl auth --org "e6e1df13-0690-4f3f-b232-58d6e864a377" --token "eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NTM3NTE5OTIsImlzcyI6IlNoaWZ0TGVmdCIsIm9yZ0lEIjoiZTZlMWRmMTMtMDY5MC00ZjNmLWIyMzItNThkNmU4NjRhMzc3IiwidXNlcklEIjoiNDQyMTJlMzctNGM5NS00MTc1LWE0YjktNTc2Y2QzMjhhY2Y0Iiwic2NvcGVzIjpbInNlYXRzOndyaXRlIiwiZXh0ZW5kZWQiLCJhcGk6djIiLCJ1cGxvYWRzOndyaXRlIiwibG9nOndyaXRlIiwicGlwZWxpbmVzdGF0dXM6cmVhZCIsIm1ldHJpY3M6d3JpdGUiLCJwb2xpY2llczpjdXN0b21lciJdfQ.Lv6dTBsKLDKqjI_FHnVlJMIf6k9XDJxFF8gJ47-Hq5Vt5b04EXJ_Ls2wpidxjPFr3K5ynDvgx2Nvz_q9LFuhTs7XgbX0Gkw_bpv-5T2nnSpV19-mflqSF9UifhVuCBSAcJ_POOUsv7YYH3KZzpWLtswOD0rAeEIwqG05eMgvCQ2JarZLPQBB7E8RO6TnNmGqcxsab6--HuwokzWnvcYyVaM2j3ZQ0k1EW6aIr9Oe8caGiJg5NIYt59XDypiMJAt1ypycDmYmQNIr5KVcG4c555a0zHLrCxjwuyKsaEfhqwqaGyUaX2HD98ZxdLZ1podYSask6ij675f8uDzz-heEBA"

@@ -112,7 +112,7 @@ resource "azurerm_linux_virtual_machine" "jenkins-sv" {
   location              = var.resource_group_location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.myterraformnic.id]
-  size                  = "Standard_B1s"
+  size                  = "Standard_F2s_v2"
   #Standard_B4ms
 
   os_disk {

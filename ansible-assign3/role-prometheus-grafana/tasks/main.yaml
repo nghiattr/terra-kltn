@@ -10,7 +10,7 @@
       become_user: labadmin
       shell: |
         az account set --subscription c2b77945-7f36-484f-a6fc-6af013ec33e6
-        az aks get-credentials --resource-group rg-week6 --name azure-aks
+        az aks get-credentials --resource-group devops-sys --name azure-aks
 
 
     - name: install prometheus+grafana

@@ -3,12 +3,12 @@ output "resource_group_name" {
 }
 
 output "name-jenkins" {
-  value = azurerm_linux_virtual_machine.jenkins-sv.name
+  value = azurerm_linux_virtual_machine.jenkins-sv2.name
 
 }
 
 output "ippub-jenkins" {
-  value = azurerm_linux_virtual_machine.jenkins-sv.public_ip_address
+  value = azurerm_linux_virtual_machine.jenkins-sv2.public_ip_address
 }
 
 output "name-gitlab" {

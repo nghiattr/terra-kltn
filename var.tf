@@ -26,12 +26,3 @@ variable "resource_group_location5" {
   description = "Location of the resource nexus."
 }
 
-variable "admin_username" {
-  default     = "labadmin"
-  description = "Admin username for all VMs"
-}
-
-variable "admin_password" {
-  default     = "Password1234!"
-  description = "Admin password for all VMs"
-}

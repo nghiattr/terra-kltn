@@ -107,8 +107,8 @@ resource "azurerm_ssh_public_key" "example_ssh" {
 }
 
 # Create virtual machine Linux for Jenkins-GitLab Server
-resource "azurerm_linux_virtual_machine" "jenkins-sv" {
-  name                  = "jenkins-sv"
+resource "azurerm_linux_virtual_machine" "jenkins-sv2" {
+  name                  = "jenkins-sv2"
   location              = var.resource_group_location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.myterraformnic.id]
@@ -331,7 +331,7 @@ resource "null_resource" "install_and_run_ansible2" {
       "echo '[defaults] \nhost_key_checking = false' > /etc/ansible/ansible.cfg",
 
       # "sudo chmod 600 ~/.ssh/id_rsa",
-      "echo 'server1 ansible_host=${azurerm_linux_virtual_machine.jenkins-sv.public_ip_address} ansible_python_interpreter=/usr/bin/python3' > /home/ac/inventory ",
+      "echo 'server1 ansible_host=${azurerm_linux_virtual_machine.jenkins-sv2.public_ip_address} ansible_python_interpreter=/usr/bin/python3' > /home/ac/inventory ",
       "echo 'server2 ansible_host=${azurerm_linux_virtual_machine.gitlab-sv.public_ip_address} ansible_python_interpreter=/usr/bin/python3' > /home/ac/inventory2 ",
       "echo 'server3 ansible_host=${azurerm_linux_virtual_machine.nexus-vm.public_ip_address} ansible_python_interpreter=/usr/bin/python3' > /home/ac/inventory3 ",
       "echo 'server4 ansible_host=${azurerm_linux_virtual_machine.sonar-sv.public_ip_address}  ansible_python_interpreter=/usr/bin/python3' > /home/ac/inventory4 ",

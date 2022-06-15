@@ -47,4 +47,4 @@
 
     - name: command install sonar-qube
       become: true
-      command: bash -c "docker run --restart unless-stopped -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:community"
+      command: bash -c "docker run -d -v `pwd`/data:/opt/sonarqube/data -v `pwd`/logs:/opt/sonarqube/logs --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:community"

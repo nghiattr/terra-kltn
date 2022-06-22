@@ -47,8 +47,11 @@ resource "azurerm_ssh_public_key" "ssh-jenkins-slave" {
 
 # Create virtual machine Linux for Jenkins-GitLab Server
 resource "azurerm_linux_virtual_machine" "jenkins-slave" {
+  depends_on = [
+    azurerm_network_interface.myterraformnic-jenkins-slave
+  ]
   name                  = "jenkins-slave"
-  location              = var.resource_group_location4
+  location              = var.resource_group_location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.myterraformnic-jenkins-slave.id]
   size                  = "Standard_F2s_v2"
@@ -79,7 +82,4 @@ resource "azurerm_linux_virtual_machine" "jenkins-slave" {
     username   = data.vault_generic_secret.secret-vm.data.admin_username
     public_key = azurerm_ssh_public_key.example_ssh.public_key
   }
-  depends_on = [
-    azurerm_network_interface.myterraformnic-jenkins-slave
-  ]
 }

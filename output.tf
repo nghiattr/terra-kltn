@@ -38,19 +38,15 @@ output "ippub-nexus" {
   value = azurerm_linux_virtual_machine.nexus-vm.public_ip_address
 }
 
-# output "name-awx" {
-#   value = azurerm_linux_virtual_machine.centos-vm.name
+output "name-slave" {
+  value = azurerm_linux_virtual_machine.jenkins-slave.name
 
-# }
+}
 
-# output "ippub-awx" {
-#   value = azurerm_linux_virtual_machine.centos-vm.public_ip_address
-# }
+output "ippub-slave" {
+  value = azurerm_linux_virtual_machine.jenkins-slave.public_ip_address
+}
 
-# output "name-arc" {
-#   value = azurerm_container_registry.acrk8s.name
-
-# }
 
 # output "name-aks" {
 #   value = azurerm_kubernetes_cluster.k8s-cluster.name

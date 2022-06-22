@@ -12,7 +12,7 @@ resource "azurerm_resource_group" "rg" {
 
 # Create virtual network
 resource "azurerm_virtual_network" "myterraformnetwork" {
-  name = "myVnet-assign2"
+  name = "myVnet-jenkins-sv"
   #address_space       = ["10.0.0.0/16"]
   address_space       = ["172.16.0.0/12"]
   location            = azurerm_resource_group.rg.location
@@ -21,7 +21,7 @@ resource "azurerm_virtual_network" "myterraformnetwork" {
 
 # Create subnet
 resource "azurerm_subnet" "myterraformsubnet" {
-  name                 = "mySubnet-assign2"
+  name                 = "mySubnet-jenkins-sv"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.myterraformnetwork.name
   #address_prefixes     = ["10.0.1.0/24"]
@@ -30,7 +30,7 @@ resource "azurerm_subnet" "myterraformsubnet" {
 
 # Create public IPs
 resource "azurerm_public_ip" "myterraformpublicip" {
-  name                = "myPublicIP-assign2"
+  name                = "myPublicIP-jenkins-sv"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Dynamic"
@@ -38,63 +38,19 @@ resource "azurerm_public_ip" "myterraformpublicip" {
 
 # Create network interface
 resource "azurerm_network_interface" "myterraformnic" {
-  name                = "myNIC-assign2"
+  name                = "myNIC-jenkins-sv"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
   ip_configuration {
-    name                          = "myNicConfiguration-assign2"
+    name                          = "myNicConfiguration-jenkins-sv"
     subnet_id                     = azurerm_subnet.myterraformsubnet.id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.myterraformpublicip.id
   }
 }
 
-#Sonar
-# Create public IPs
-resource "azurerm_public_ip" "myterraformpublicip-sonar" {
-  name                = "myPublicIP-sonar"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  allocation_method   = "Dynamic"
-}
 
-# Create network interface
-resource "azurerm_network_interface" "myterraformnic-sonar" {
-  name                = "myNIC-sonar"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-
-  ip_configuration {
-    name                          = "myNicConfiguration-sonar"
-    subnet_id                     = azurerm_subnet.myterraformsubnet.id
-    private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.myterraformpublicip-sonar.id
-  }
-}
-
-#Slave
-# Create public IPs
-resource "azurerm_public_ip" "myterraformpublicip-slave" {
-  name                = "myPublicIP-slave"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  allocation_method   = "Dynamic"
-}
-
-# Create network interface
-resource "azurerm_network_interface" "myterraformnic-slave" {
-  name                = "myNIC-slave"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-
-  ip_configuration {
-    name                          = "myNicConfiguration-slave"
-    subnet_id                     = azurerm_subnet.myterraformsubnet.id
-    private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.myterraformpublicip-slave.id
-  }
-}
 
 
 # Create (and display) an SSH key
@@ -106,7 +62,7 @@ resource "azurerm_ssh_public_key" "example_ssh" {
   public_key = data.vault_generic_secret.secret-vm.data.id_rsapub
 }
 
-# Create virtual machine Linux for Jenkins-GitLab Server
+# Create virtual machine Linux for Jenkins Server
 resource "azurerm_linux_virtual_machine" "jenkins-sv" {
   name                  = "jenkins-sv"
   location              = var.resource_group_location
@@ -142,76 +98,6 @@ resource "azurerm_linux_virtual_machine" "jenkins-sv" {
   }
 }
 
-resource "azurerm_linux_virtual_machine" "sonar-sv" {
-  name                  = "sonar-sv"
-  location              = var.resource_group_location
-  resource_group_name   = azurerm_resource_group.rg.name
-  network_interface_ids = [azurerm_network_interface.myterraformnic-sonar.id]
-  size                  = "Standard_B2s"
-  #Standard_B4ms
-
-  os_disk {
-    name                 = "myOsDisk-sonar-sv"
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
-  }
-
-  source_image_reference {
-    publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-focal"
-    sku       = "20_04-lts-gen2"
-    version   = "latest"
-  }
-
-  computer_name = "sonar-sv"
-  #admin_username                  = var.admin_username
-  #admin_password                  = var.admin_password
-  admin_username                  = data.vault_generic_secret.secret-vm.data.admin_username
-  admin_password                  = data.vault_generic_secret.secret-vm.data.admin_password
-  disable_password_authentication = false
-
-  admin_ssh_key {
-    #username   = var.admin_username
-    username   = data.vault_generic_secret.secret-vm.data.admin_username
-    public_key = azurerm_ssh_public_key.example_ssh.public_key
-  }
-}
-
-resource "azurerm_linux_virtual_machine" "jenkins-slave" {
-  name                  = "jenkins-slave"
-  location              = var.resource_group_location
-  resource_group_name   = azurerm_resource_group.rg.name
-  network_interface_ids = [azurerm_network_interface.myterraformnic-slave.id]
-  size                  = "Standard_F2s_v2"
-  #Standard_B4ms
-
-  os_disk {
-    name                 = "myOsDisk-jenkins-slave"
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
-  }
-
-  source_image_reference {
-    publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-focal"
-    sku       = "20_04-lts-gen2"
-    version   = "latest"
-  }
-
-  computer_name  = "jenkins-slave"
-  admin_username = data.vault_generic_secret.secret-vm.data.admin_username
-  admin_password = data.vault_generic_secret.secret-vm.data.admin_password
-  #admin_username                  = var.admin_username
-  #admin_password                  = var.admin_password
-  disable_password_authentication = false
-
-  admin_ssh_key {
-    #username   = var.admin_username
-    username   = data.vault_generic_secret.secret-vm.data.admin_username
-    public_key = azurerm_ssh_public_key.example_ssh.public_key
-  }
-}
-
 
 /*-----------------------Create AKS--------------------------------------------*/
 
@@ -227,8 +113,6 @@ resource "azurerm_virtual_network" "myterraformnetwork-k8s" {
 resource "azurerm_subnet" "akspodssubnet" {
   name                = "akspodssubnet"
   resource_group_name = azurerm_resource_group.rg.name
-  #virtual_network_name        = azurerm_virtual_network.vnetaks.name   dif vnet
-  #address_prefixes              = ["172.16.0.0/24"]
   virtual_network_name = azurerm_virtual_network.myterraformnetwork-k8s.name
   address_prefixes     = ["177.16.2.0/24"]
 
@@ -275,21 +159,8 @@ resource "azurerm_kubernetes_cluster" "k8s-cluster" {
 
 }
 
-#add the role to the identity the kubernetes cluster was assigned
 
-# resource "azurerm_role_assignment" "role-aks" {
-
-#   principal_id                     = azurerm_kubernetes_cluster.k8s-cluster.kubelet_identity[0].object_id
-#   role_definition_name             = "AcrPull"
-#   scope                            = azurerm_container_registry.acrk8s.id
-#   skip_service_principal_aad_check = true
-
-# }
-
-
-
-
-#Ansible
+#Ansible run
 
 resource "null_resource" "install_and_run_ansible2" {
   depends_on = [azurerm_linux_virtual_machine.ansible-vm]
@@ -317,7 +188,7 @@ resource "null_resource" "install_and_run_ansible2" {
     destination = "/home/ac/install-ansible.sh"
   }
   provisioner "file" {
-    source      = "./ansible-assign3/"
+    source      = "./jenkins-role/"
     destination = "/home/ac/"
   }
 

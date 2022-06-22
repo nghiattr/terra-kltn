@@ -1,5 +1,4 @@
 
-/*-----------------------CentOS AWX--------------------------------------------*/
 
 resource "azurerm_virtual_network" "myterraformnetwork-ansible" {
   name                = "myVnet-ansible"

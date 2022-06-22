@@ -18,11 +18,11 @@ variable "resource_group_location3" {
   description = "Location of the resource awx."
 }
 variable "resource_group_location4" {
-  default     = "Australia Central"
+  default     = "Korea Central"
   description = "Location of the gitlab."
 }
 variable "resource_group_location5" {
-  default     = "Australia Southeast"
+  default     = "Central India"
   description = "Location of the resource nexus."
 }
 

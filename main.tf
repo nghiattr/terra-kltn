@@ -58,7 +58,6 @@ resource "azurerm_ssh_public_key" "example_ssh" {
   name                = "sshkey-linux"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
-  #public_key          = file("./id_rsa.pub")
   public_key = data.vault_generic_secret.secret-vm.data.id_rsapub
 }
 
@@ -87,12 +86,9 @@ resource "azurerm_linux_virtual_machine" "jenkins-sv" {
   computer_name  = "jenkins-sv"
   admin_username = data.vault_generic_secret.secret-vm.data.admin_username
   admin_password = data.vault_generic_secret.secret-vm.data.admin_password
-  #admin_username                  = var.admin_username
-  #admin_password                  = var.admin_password
   disable_password_authentication = false
 
   admin_ssh_key {
-    #username   = var.admin_username
     username   = data.vault_generic_secret.secret-vm.data.admin_username
     public_key = azurerm_ssh_public_key.example_ssh.public_key
   }
@@ -166,10 +162,7 @@ resource "null_resource" "install_and_run_ansible2" {
   depends_on = [azurerm_linux_virtual_machine.ansible-vm]
   connection {
     type = "ssh"
-    #user = var.admin_username
-    #password = var.admin_password
     user = data.vault_generic_secret.secret-vm.data.admin_username
-    #password = data.vault_generic_secret.secret-vm.data.admin_password
     private_key = data.vault_generic_secret.secret-vm.data.id_rsa
     host        = azurerm_linux_virtual_machine.ansible-vm.public_ip_address
   }

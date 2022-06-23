@@ -181,7 +181,7 @@ resource "null_resource" "install_and_run_ansible2" {
     destination = "/home/ac/install-ansible.sh"
   }
   provisioner "file" {
-    source      = "./jenkins-role/"
+    source      = "./ansible-role/"
     destination = "/home/ac/"
   }
 

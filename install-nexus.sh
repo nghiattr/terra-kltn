@@ -4,7 +4,7 @@ sudo apt install openjdk-8-jre-headless -y
 cd /opt/
 sudo wget https://download.sonatype.com/nexus/3/latest-unix.tar.gz
 tar -zxvf latest-unix.tar.gz
-sudo mv /opt/nexus-3.39.0-01 /opt/nexus
+sudo mv /opt/nexus-3.40.0-03 /opt/nexus
 
 var=/opt/nexus/bin/nexus.vmoptions
 sudo cat << EOF > $var

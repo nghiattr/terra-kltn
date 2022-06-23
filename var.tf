@@ -18,7 +18,7 @@ variable "resource_group_location3" {
   description = "Location of the resource awx."
 }
 variable "resource_group_location4" {
-  default     = "Southeast Asia"
+  default     = "Korea Central"
   description = "Location of the gitlab."
 }
 variable "resource_group_location5" {
